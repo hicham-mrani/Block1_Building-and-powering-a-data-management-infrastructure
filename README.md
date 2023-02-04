@@ -97,12 +97,6 @@ To complete this project, your team should deliver:
 
 ![Map](https://full-stack-assets.s3.eu-west-3.amazonaws.com/images/Kayak_best_destination_project.png)
 
-Email : hicham.mrani@outlook.fr
-
-Vidyard link : [#]()
-
-- Open the "documents" folder to acces informations about the dataset
-
 # Getting started
 
 ## Data 
