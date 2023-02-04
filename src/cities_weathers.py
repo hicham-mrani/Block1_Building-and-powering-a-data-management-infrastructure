@@ -5,9 +5,12 @@ import boto3
 import os
 import requests as req
 import pandas as pd
+import numpy as np
 from datetime import datetime
 from io import StringIO
 from tqdm import tqdm
+import collections
+
 
 # ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
 #           CONSTANTS          #
@@ -32,9 +35,20 @@ session = boto3.Session(
     aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
 )
 
+# ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
+#           Functions           #
+# ______________________________#
+
+def export_to_s3(data: pd.DataFrame, bucket_name , file_name):
+    csv_buffer = StringIO()
+    data.to_csv(csv_buffer, index=False)
+    # export to s3 bucket kayak-jedha-certification-2023
+    s3.Object(bucket_name, file_name).put(Body=csv_buffer.getvalue())
+    print(f"{file_name} has been export to {bucket_name} bucket")
+
 
 # ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
-#             MAIN             #
+#             MAIN              #
 # ______________________________#
 
 # import cities_infos.csv from s3 bucket
@@ -48,7 +62,7 @@ df = pd.read_csv(StringIO(csv_string))
 # get weather for all my cities from API
 dictionary = {}
 
-for city in tqdm(range(len(df))):
+for city in tqdm(range(len(df)), desc="API call :"):
     response = req.get(END_PONT+'/data/2.5/onecall', params={
                        'lat': df['lat'][city], 'lon': df['lon'][city], 'units': UNIT, 'exclude': EXCLUDE, "lang": LANG, 'appid': OPEN_WEATHER_API_KEY})
     dictionary.setdefault('name',[]).append(df['city_name'][city])
@@ -66,11 +80,58 @@ for city in tqdm(range(len(df))):
         else:
             continue
 
-df = pd.DataFrame.from_dict(data=dictionary)
 csv_buffer = StringIO()
 df.to_csv(csv_buffer, index=False)
 
-# export to s3 bucket kayak-jedha-certification-2023
-file_name = "cities_weathers.csv"
-s3.Object(bucket_name, file_name).put(Body=csv_buffer.getvalue())
-print(f"{file_name} has been export to {bucket_name} bucket")
+export_to_s3(data=df, bucket_name=bucket_name, file_name = "cities_weathers.csv")
+
+# ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
+#   Preparing data for export   #
+# ______________________________#
+
+# weight dictionary to sort the datas
+main_weather_weight = {
+    "Clear": 1,
+    "Clouds": 2,
+    "Fog": 3,
+    "Mist": 3,
+    "Drizzle": 4,
+    "Rain": 4,
+    "Snow": 5,
+    "Thunderstorm": 6,
+    "Haze": 7,
+    "Dust": 7,
+    "Smoke": 7,
+    "Ash": 7,
+    "Sand": 7,
+    "Squall": 7,
+    "Tornado": 8
+}
+
+temp_cols = []
+weather_cols = []
+avg_temp = []
+main_weather = []  # the weather that comes up most often
+mode_weather = []  # number of time the weather comes up during the week
+
+df = pd.DataFrame.from_dict(data=dictionary)
+
+for col in tqdm(df.columns, desc="temp_cols and weather_cols building :"):
+    if "_temp" in col:
+        temp_cols.append(col)
+    elif "_weather" in col:
+        weather_cols.append(col)
+
+for index, row in tqdm(df.iterrows(), desc="[avg_temp, main_weather building, mode_weather] building :"):
+    avg_temp.append(round(np.mean(row[temp_cols]), 2))
+    main_weather.append(collections.Counter(row[weather_cols]).most_common()[0][0])
+    mode_weather.append(collections.Counter(row[weather_cols]).most_common()[0][1])
+
+df['avg_temp'] = avg_temp
+df['mode_weather'] = mode_weather
+df['main_weather'] = main_weather
+df['main_weather_weight'] = df['main_weather'].apply(lambda weather: main_weather_weight[weather])
+
+df.sort_values(by=['main_weather_weight', 'avg_temp'], axis=0, ascending=[True, False], inplace=True, kind='quicksort', ignore_index=True, key=None)
+
+export_to_s3(data=df.head(5), bucket_name=bucket_name, file_name = "top-5_destinations.csv")
