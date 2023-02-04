@@ -12,7 +12,7 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'kayak_spiders'
+BOT_NAME = 'kayak'
 
 SPIDER_MODULES = ['kayak_spiders.spiders']
 NEWSPIDER_MODULE = 'kayak_spiders.spiders'
@@ -22,10 +22,10 @@ NEWSPIDER_MODULE = 'kayak_spiders.spiders'
 #USER_AGENT = 'kayak_spiders (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+#CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -55,11 +55,10 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'kayak_spiders.middlewares.KayakSpidersDownloaderMiddleware': 543,
-#    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-#    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -75,7 +74,7 @@ ROBOTSTXT_OBEY = True
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-# AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
@@ -100,6 +99,7 @@ TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
 
 FEED_EXPORT_ENCODING = 'utf-8'
 
+# destination folder if custom_settigs have not been set
 FEEDS = {
     '../../data/%(name)s/%(name)s_%(time)s.csv': {'format': 'csv'}
 }
