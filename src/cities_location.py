@@ -2,9 +2,10 @@
 #           LIBRARIES          #
 #______________________________#
 
-import os, requests, json
+import requests, json
 import pandas as pd
 from io import StringIO
+import boto3
 
 #¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
 #           CONSTANTS          #
@@ -17,9 +18,7 @@ API_NOMINATIM = 'https://nominatim.openstreetmap.org/'
 #         AWS Settings         #
 #______________________________#
 
-import boto3
-s3 = boto3.resource('s3')
-client = boto3.client('s3')
+s3 = boto3.client('s3')
 bucket_name = "kayak-jedha-certification-2023"
 object_key = "top_french_cities_spider/35-cities-to-visit-in-france.json"
 
@@ -70,7 +69,8 @@ def export_csv_to_s3(data: pd.DataFrame, bucket_name , file_name):
 #¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
 #             MAIN             #
 #______________________________#
-json_obj = client.get_object(Bucket=bucket_name, Key=object_key)
+
+json_obj = s3.get_object(Bucket=bucket_name, Key=object_key)
 json_string = json.loads(json_obj['Body'].read().decode('utf-8'))
 print(f'{object_key} has been import\n\n')
 cities = json_string[0]["cities"]

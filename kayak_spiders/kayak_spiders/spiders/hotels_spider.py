@@ -62,15 +62,17 @@ class HotelSpider(scrapy.Spider):
 
         for hotel in response.css('div[data-testid="property-card"]'):
             hotel_url = hotel.css('a[data-testid="title-link"]::attr(href)').get()
+            hotel_img = hotel.css('img[data-testid="image"]::attr(src)').get()
             # I want to keep the information about the original city used for the request because,
             # all hotels does not concern the requested city in case of hotel non-availability
             city = re.search(r'&ss=(.*?)&', origin_url).group(1).replace('%20', ' ')
             city = urllib.parse.unquote(city)
-            yield response.follow(hotel_url, callback=self.hotel_detail, cb_kwargs={"city": city})
+            yield response.follow(hotel_url, callback=self.hotel_detail, cb_kwargs={"city": city, "hotel_img": hotel_img})
 
-    def hotel_detail(self, response, city):
+    def hotel_detail(self, response, city, hotel_img):
         yield {
             'city': city,
+            'hotel_img': hotel_img,
             'hotel_url': response.url,
             'hotel_name': response.xpath('//*[@id="hp_hotel_name"]/div/div/h2/text()').get(),
             "hotel_description": response.xpath('//*[@id="property_description_content"]/p/text()').getall(),

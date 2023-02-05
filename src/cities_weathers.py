@@ -70,8 +70,8 @@ for city in tqdm(range(len(df)), desc="API call :"):
         if cpt != 0:
             timestamp = day['dt']
             day_name = datetime.fromtimestamp(timestamp).strftime("%A")
-            dictionary.setdefault(f'{day_name}_temp',[]).append(day['feels_like']["day"])
-            dictionary.setdefault(f'{day_name}_weather',[]).append(day['weather'][0]['main'])
+            dictionary.setdefault(f'day+{cpt}_temp',[]).append(day['feels_like']["day"])
+            dictionary.setdefault(f'day+{cpt}_weather',[]).append(day['weather'][0]['main'])
         else:
             continue
 
