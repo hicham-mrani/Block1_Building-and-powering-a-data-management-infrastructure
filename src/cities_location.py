@@ -66,6 +66,12 @@ def get_cities_infos(cities: list) -> list:
                 })
     return cities_infos
 
+def export_csv_to_s3(data: pd.DataFrame, bucket_name , file_name):
+    csv_buffer = StringIO()
+    data.to_csv(csv_buffer, index=False)
+    # export to s3 bucket kayak-jedha-certification-2023
+    s3.Object(bucket_name, file_name).put(Body=csv_buffer.getvalue())
+    print(f"{file_name} has been export to {bucket_name} bucket")
 
 #¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
 #             MAIN             #
@@ -76,10 +82,8 @@ print(f'{object_key} has been import\n\n')
 cities = json_string[0]["cities"]
 
 df = pd.DataFrame(data=get_cities_infos(cities))
-csv_buffer = StringIO()
-df.to_csv(csv_buffer, index=False)
+file_name = "cities_location.csv"
 
 # export to s3 bucket kayak-jedha-certification-2023
-file_name = "cities_location.csv"
-s3.Object(bucket_name,file_name).put(Body=csv_buffer.getvalue())
-print(f"{file_name} has been export to {bucket_name} bucket")
+export_csv_to_s3(data=df, bucket_name=bucket_name, file_name=file_name)
+

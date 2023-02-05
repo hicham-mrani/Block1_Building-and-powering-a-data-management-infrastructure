@@ -13,7 +13,7 @@ import collections
 
 
 # ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
-#           CONSTANTS          #
+#           CONSTANTS           #
 # ______________________________#
 
 END_PONT = 'https://api.openweathermap.org'
@@ -39,7 +39,7 @@ session = boto3.Session(
 #           Functions           #
 # ______________________________#
 
-def export_to_s3(data: pd.DataFrame, bucket_name , file_name):
+def export_csv_to_s3(data: pd.DataFrame, bucket_name , file_name):
     csv_buffer = StringIO()
     data.to_csv(csv_buffer, index=False)
     # export to s3 bucket kayak-jedha-certification-2023
@@ -83,7 +83,7 @@ for city in tqdm(range(len(df)), desc="API call :"):
 csv_buffer = StringIO()
 df.to_csv(csv_buffer, index=False)
 
-export_to_s3(data=df, bucket_name=bucket_name, file_name = "cities_weathers.csv")
+export_csv_to_s3(data=df, bucket_name=bucket_name, file_name = "cities_weathers.csv")
 
 # ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
 #   Preparing data for export   #
@@ -134,4 +134,4 @@ df['main_weather_weight'] = df['main_weather'].apply(lambda weather: main_weathe
 
 df.sort_values(by=['main_weather_weight', 'avg_temp'], axis=0, ascending=[True, False], inplace=True, kind='quicksort', ignore_index=True, key=None)
 
-export_to_s3(data=df.head(5), bucket_name=bucket_name, file_name = "top-5_destinations.csv")
+export_csv_to_s3(data=df.head(5), bucket_name=bucket_name, file_name = "top-5_destinations.csv")
