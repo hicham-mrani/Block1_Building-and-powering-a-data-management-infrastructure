@@ -37,6 +37,7 @@ def import_csv_from_s3(bucket_name , object_key):
 
 def export_json_to_s3(dictionary:dict, bucket_name:str, object_key:str):
     s3.put_object(Body=json.dumps(dictionary), Bucket=bucket_name, Key=object_key)
+    print(f'{object_key} has been export to {bucket_name}\n\n')
 
 def get_geojson(lat: float, lon: float):
     return requests.get(API_GEO + CITIES, params={'lat': lat, 'lon': lon, 'fields': ['contour'], 'format': 'geojson', 'geometry': 'contour'}).json()
@@ -46,13 +47,12 @@ def get_geojson(lat: float, lon: float):
 # ______________________________#
 
 # create dataframe of top-5_destinations
-object_key = "top-5_destinations.csv"
+object_key = "cities_location.csv"
 df_destinations = pd.read_csv(import_csv_from_s3(bucket_name, object_key))
 
 geojson_list = []
 
-for count, city in enumerate(df.values):
-    #pprint(get_feature(city[1], city[2])['features'])
+for city in df_destinations.values:
     city_geojson = get_geojson(city[1], city[2])['features'][0]
     geojson_list.append(city_geojson)
     export_json_to_s3(dictionary=city_geojson,
