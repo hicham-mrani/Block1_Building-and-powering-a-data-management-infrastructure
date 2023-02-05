@@ -65,7 +65,7 @@ dictionary = {}
 for city in tqdm(range(len(df)), desc="API call :"):
     response = req.get(END_PONT+'/data/2.5/onecall', params={
                        'lat': df['lat'][city], 'lon': df['lon'][city], 'units': UNIT, 'exclude': EXCLUDE, "lang": LANG, 'appid': OPEN_WEATHER_API_KEY})
-    dictionary.setdefault('name',[]).append(df['city_name'][city])
+    dictionary.setdefault('city',[]).append(df['city_name'][city])
     dictionary.setdefault('lat',[]).append(df['lat'][city])
     dictionary.setdefault('lon',[]).append(df['lon'][city])
     dictionary.setdefault('curr_temp',[]).append(response.json()['daily'][0]['feels_like']["day"]) # I choose to work with feels_like temperature
