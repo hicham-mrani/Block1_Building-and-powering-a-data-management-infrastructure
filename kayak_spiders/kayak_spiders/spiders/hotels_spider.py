@@ -8,12 +8,13 @@ from io import StringIO
 import scrapy
 import datetime
 import re
+import urllib
+import boto3
 
 # ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨#
-#         AWS Settings         #
+#         AWS Settings          #
 # ______________________________#
 
-import boto3
 s3 = boto3.resource('s3')
 client = boto3.client('s3')
 bucket_name = "kayak-jedha-certification-2023"
@@ -28,14 +29,14 @@ session = boto3.Session(
 #             MAIN              #
 # ______________________________#
 
-# import cities_infos.csv from s3 bucket
+# import top-5_destinations.csv from s3 bucket
 csv_obj = client.get_object(Bucket=bucket_name, Key=object_key)
 csv_string = csv_obj['Body'].read().decode('utf-8')
 print(f'{object_key} has been import\n\n')
 
 # create dataframe of cities
 df = pd.read_csv(StringIO(csv_string))
-cities = list(df['name'])
+cities = list(df['city'])
 filename = "hotel_list.csv"
 
 class HotelSpider(scrapy.Spider):
@@ -68,7 +69,8 @@ class HotelSpider(scrapy.Spider):
             hotel_url = hotel.css('a[data-testid="title-link"]::attr(href)').get()
             # I want to keep the information about the original city used for the request because,
             # all hotels does not concern the requested city in case of hotel non-availability
-            city = re.search(r'&ss=(.*?)&', origin_url).group(1).replace('%20', ' ') 
+            city = re.search(r'&ss=(.*?)&', origin_url).group(1).replace('%20', ' ')
+            city = urllib.parse.unquote(city)
             yield response.follow(hotel_url, callback=self.hotel_detail, cb_kwargs={"city": city})
 
     def hotel_detail(self, response, city):
