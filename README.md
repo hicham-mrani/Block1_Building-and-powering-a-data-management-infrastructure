@@ -93,7 +93,7 @@ To complete this project, your team should deliver:
 
 * A SQL Database where we should be able to get the same cleaned data from S3 
 
-* Two maps where you should have a Top-5 destinations and a Top-20 hotels in the area. You can use plotly or any other library to do so. It should look something like this: 
+* Two maps where you should have a Top-5 destinations and a Top-20 hotels in the area. You can use plotly or any other library to do so.
 
 # Getting started
 
