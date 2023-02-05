@@ -137,4 +137,4 @@ Hicham Mrani - Github : https://github.com/hicham-mrani
 
 Video link : 
 
-<iframe src="map.html" height="500" width="500"></iframe>
+You can explore the map [Here](https://raw.githack.com/hicham-mrani/ETL_Project-Kayak/master/map.html)
