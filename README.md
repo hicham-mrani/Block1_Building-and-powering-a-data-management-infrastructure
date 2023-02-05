@@ -95,8 +95,6 @@ To complete this project, your team should deliver:
 
 * Two maps where you should have a Top-5 destinations and a Top-20 hotels in the area. You can use plotly or any other library to do so. It should look something like this: 
 
-![Map](https://full-stack-assets.s3.eu-west-3.amazonaws.com/images/Kayak_best_destination_project.png)
-
 # Getting started
 
 ## Data 
@@ -138,3 +136,5 @@ To complete this project, your team should deliver:
 Hicham Mrani - Github : https://github.com/hicham-mrani
 
 Video link : 
+
+<iframe src="map.html" height="500" width="500"></iframe>
