@@ -19,8 +19,6 @@ bucket_name = "kayak-jedha-certification-2023"
 # ______________________________#
 API_GEO = 'https://geo.api.gouv.fr/'
 CITIES = 'communes'
-GEOJSON = '../docs/geojson/'
-DOCS = '../docs/'
 France_coord= {
     "lat": 46.603354,
     "lon": 1.8883335
