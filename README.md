@@ -137,4 +137,12 @@ Hicham Mrani - Github : https://github.com/hicham-mrani
 
 Video link : 
 
-You can explore the map [https://raw.githack.com/hicham-mrani/ETL_Project-Kayak/master/map.html]
+Map with top 5 destinations and a Top 20 hotels in the area : [https://raw.githack.com/hicham-mrani/ETL_Project-Kayak/master/map.html]
+
+AWS Bucket overview :
+
+![AWS Bucket overview](ressources/AWS_S3_Kayak-Bucket_2023-02-05%20094040.jpg)
+
+AWS RDS Overview : 
+
+![AWS RDS Overview](ressources/RDS_Kayak2023-02-05%20115327.jpg)
