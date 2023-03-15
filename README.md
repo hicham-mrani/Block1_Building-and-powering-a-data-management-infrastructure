@@ -132,7 +132,7 @@ To complete this project, your team should deliver:
    pip install -r requirements.txt
    ```
 
-# Author
+# Results
 
 Map with top 5 destinations and a Top 20 hotels in the area : [https://raw.githack.com/hicham-mrani/ETL_Project-Kayak/master/map.html]
 
