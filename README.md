@@ -133,9 +133,6 @@ To complete this project, your team should deliver:
    ```
 
 # Author
-Hicham Mrani - Github : https://github.com/hicham-mrani
-
-Video link : https://share.vidyard.com/watch/EWuMTEt9Lk87ZCF71dxMGa
 
 Map with top 5 destinations and a Top 20 hotels in the area : [https://raw.githack.com/hicham-mrani/ETL_Project-Kayak/master/map.html]
 
